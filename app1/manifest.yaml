@@ -8,11 +8,11 @@ spec:
   replicas: 2
   selector:
     matchLabels:
-        app: app1
+      app: app1
   template:
     metadata:
       labels:
-         app: app1
+        app: app1
     spec:
       containers:
         - name: app1
@@ -27,7 +27,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    name: app1
+    app: app1   # ✅ FIXED
   ports:
     - protocol: TCP
       port: 80
@@ -38,21 +38,21 @@ kind: Ingress
 metadata:
   name: minimal-ingress
   annotations:
-    alb.ingress.kubernetes.io/scheme : internet-facing
-    alb.ingress.kubernetes.io/target : ip
-    alb.ingress.kubernetes.io/listen-ports : [{"HTTPS":443}]
-    alb.ingress.kubernetes.io/certificate-arn : arn:aws:acm:us-east-1:258180561417:certificate/2a69e12e-653a-4fbb-8de8-2166f8ec1adc
-    alb.ingress.kubernetes.io/group.name : pothugunta
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'   # ✅ FIXED
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:258180561417:certificate/2a69e12e-653a-4fbb-8de8-2166f8ec1adc
+    alb.ingress.kubernetes.io/group.name: pothugunta
 spec:
   ingressClassName: alb
   rules:
-  - host: "app1.daws-79s.online"
-    http:
-      paths:
-      - pathType: Prefix
-        path: "/"
-        backend:
-          service:
-            name: app1
-            port:
-              number: 80
+    - host: app1.daws-79s.online
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app1
+                port:
+                  number: 80
