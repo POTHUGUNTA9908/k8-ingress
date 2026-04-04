@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app2
+  labels:
+    app: app2
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: app2
+  template:
+    metadata:
+      labels:
+        app: app2
+    spec:
+      containers:
+        - name: app2
+          image: pothugunta/app2:1.0.0
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app2
+spec:
+  type: LoadBalancer
+  selector:
+    app: app2   # ✅ FIXED
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minimal-ingress
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'   # ✅ FIXED
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:258180561417:certificate/2a69e12e-653a-4fbb-8de8-2166f8ec1adc
+    alb.ingress.kubernetes.io/group.name: pothugunta
+spec:
+  ingressClassName: alb
+  rules:
+    - host: app2.daws-79.shop
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app2
+                port:
+                  number: 80
