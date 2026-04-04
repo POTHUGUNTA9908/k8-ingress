@@ -25,7 +25,6 @@ kind: Service
 metadata:
   name: app1
 spec:
-  type: LoadBalancer
   selector:
     app: app1   # ✅ FIXED
   ports:
@@ -39,7 +38,7 @@ metadata:
   name: app1
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target: ip
+    alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'   # ✅ FIXED
     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:258180561417:certificate/2a69e12e-653a-4fbb-8de8-2166f8ec1adc
     alb.ingress.kubernetes.io/group.name: pothugunta
