@@ -46,7 +46,7 @@ metadata:
 spec:
   ingressClassName: alb
   rules:
-    - host: app1.daws-79s.online
+    - host: app1.daws-79.shop
       http:
         paths:
           - path: /
